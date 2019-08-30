@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    <div class="container body-content">
+        <div class="row">
+            {% for book in books %}
+                <div class="col-md-12">
+                    <article>
+                        <a href="{{ path('book_view', {id: book.id}) }}">
+                            <img src="{{ asset('uploads/images/articles/' ~ book.image) }}" width="400px" height="200px">
+                            <a/>
+                        <header>
+                            <h2>{{ book.title }}</h2>
+                        </header>
+
+                        <p>
+                            {{ book.description }}
+                        </p>
+                        <small>Views:7</small>
+
+                        <footer>
+                            <div class="pull-right">
+                                <a class="btn btn-success btn-xs" href="{{ path('book_edit', {id:book.id}) }}">Edit</a>
+                                <a class="btn btn-danger btn-xs" href="{{ path('book_delete', {id:book.id}) }}">Delete</a>
+                                <a class="btn btn-default btn-xs" href="{{ path('library_index') }}">back &raquo;</a>
+                            </div>
+                        </footer>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+

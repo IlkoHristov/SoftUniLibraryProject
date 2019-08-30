@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% for msg in app.session.flashbag.get('info') %}
+
+        <div class="alert alert-success">
+            {{ msg }}
+        </div>
+    {% endfor %}
+    <div class="container body-content">
+        <div class="row">
+            {% for book in books %}
+                <div class="col-md-6">
+                    <article>
+                        <a href="{{ path('book_view',{id:book.id}) }}">
+                            <img src="{{ asset('uploads/images/articles/' ~ book.image) }}" width="400px" height="200px">
+                        </a>
+                        <header>
+                            <h2>{{ book.title }}</h2>
+                        </header>
+                        <p>
+                            Author: {{ book.name }}
+                        </p>
+                        <p>
+                            Short Description: {{ book.description }}
+                        </p>
+                        <small>Views:{{ book.viewCount }}</small><br/>
+                        <small>Date Added:{{ book.dateAdded|date("F jS \\a\\t g:ia")  }}</small>
+                        <small class="author">
+                            Added By: {{ book.author.fullName }}
+                        </small>
+
+                        <footer>
+                            <div class="pull-right">
+                                <a class="btn btn-default btn-xs"
+                                   href="{{path('book_view', {'id':book.id}) }}">Read more &raquo;</a>
+                            </div>
+                        </footer>
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
