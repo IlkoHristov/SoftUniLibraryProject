@@ -2,6 +2,7 @@
 
 namespace SoftUniBlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -76,9 +77,16 @@ class Book
      * @ORM\Column(name="name", type="string")
      */
     private $name;
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
+     */
+    private $comments;
     public function __construct()
     {
         $this->dateAdded=new \DateTime('now');
+        $this->comments=new ArrayCollection();
     }
 
     /**
@@ -271,6 +279,22 @@ class Book
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Comment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param ArrayCollection $comments
+     */
+    public function setComments(ArrayCollection $comments): void
+    {
+        $this->comments = $comments;
     }
 
 

@@ -34,7 +34,7 @@ class BookController extends Controller
         if ($form->isSubmitted()) {
             $this->uploadFile($form, $book);
             $book->setAuthor($this->getUser());
-            $em=$this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
             $this->addFlash("info", "Article created successfully!");
@@ -56,9 +56,17 @@ class BookController extends Controller
     public function viewArticle($id)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
-
-        return $this->render('articles/view.html.twig', ['book' => $book]);
+        /** @var Book $book */
+        $book->setViewCount($book->getViewCount() + 1);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($book);
+        $em->flush();
+        /** @var Book $book */
+        return $this->render('articles/view.html.twig', ['book' => $book,
+            "comments"=>$book->getComments()]);
     }
+
+
     /**
      * @Route("/book/edit/{id}", name="book_edit",methods={"POST", "GET"})
      * @param $id
@@ -68,38 +76,39 @@ class BookController extends Controller
 
     public function editArticle($id, Request $request)
     {
-        $book=$this->getDoctrine()->getRepository(Book::class)->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
 
-        if($book===null){
+        if ($book === null) {
             return $this->redirectToRoute('library_index');
 
         }
 
-        $currentUser=$this->getUser();
+        $currentUser = $this->getUser();
 
         /**
-         *@var User $currentUser
+         * @var User $currentUser
          */
-        if(!$currentUser->isAuthor($book) && !$currentUser->isAdmin()){
+        if (!$currentUser->isAuthor($book) && !$currentUser->isAdmin()) {
             return $this->redirectToRoute('library_index');
         }
 
-        $form=$this->createForm(BookType::class, $book);
+        $form = $this->createForm(BookType::class, $book);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $this->uploadFile($form, $book);
-            $em=$this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getManager();
             $em->merge($book);
             $em->flush();
 
             return $this->redirectToRoute("library_index");
         }
 
-        return $this->render('articles/edit.html.twig', array('book'=>$book,
-            'form'=>$form->createView()));
+        return $this->render('articles/edit.html.twig', array('book' => $book,
+            'form' => $form->createView()));
 
     }
+
     /**
      * @Route("/book/delete/{id}", name="book_delete")
      * @param $id
@@ -109,36 +118,37 @@ class BookController extends Controller
 
     public function delete($id, Request $request)
     {
-        $book=$this->getDoctrine()->getRepository(Book::class)->find($id);
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
 
-        if($book===null){
+        if ($book === null) {
             return $this->redirectToRoute('library_index');
 
         }
-        $currentUser=$this->getUser();
+        $currentUser = $this->getUser();
         /**
-         *@var User $currentUser
+         * @var User $currentUser
          */
-        if(!$currentUser->isAuthor($book) && !$currentUser->isAdmin()){
+        if (!$currentUser->isAuthor($book) && !$currentUser->isAdmin()) {
             return $this->redirectToRoute('library_index');
         }
 
-        $form=$this->createForm(BookType::class, $book);
+        $form = $this->createForm(BookType::class, $book);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
-            $em=$this->getDoctrine()->getManager();
+        if ($form->isSubmitted()) {
+            $em = $this->getDoctrine()->getManager();
             $em->remove($book);
             $em->flush();
 
             return $this->redirectToRoute("library_index");
         }
 
-        return $this->render('articles/delete.html.twig', array('book'=>$book,
-            'form'=>$form->createView()));
+        return $this->render('articles/delete.html.twig', array('book' => $book,
+            'form' => $form->createView()));
 
     }
+
     /**
      * @Route("/articles/my_articles",name="my_articles")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
@@ -154,6 +164,7 @@ class BookController extends Controller
             ["books" => $books]
         );
     }
+
     /**
      * @param FormInterface $form
      * @param Book $book

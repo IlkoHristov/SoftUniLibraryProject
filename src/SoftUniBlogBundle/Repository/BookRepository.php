@@ -4,6 +4,8 @@ namespace SoftUniBlogBundle\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping;
+use SoftUniBlogBundle\Entity\Book;
+
 
 
 /**
@@ -14,5 +16,12 @@ use Doctrine\ORM\Mapping;
  */
 class BookRepository extends \Doctrine\ORM\EntityRepository
 {
-
+    public function __construct(EntityManagerInterface $em, Mapping\ClassMetadata $metaData = null)
+    {
+        parent::__construct($em,
+            $metaData == null ?
+                new Mapping\ClassMetadata(Book::class) :
+                $metaData
+        );
+    }
 }

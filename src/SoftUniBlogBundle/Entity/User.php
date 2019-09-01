@@ -65,11 +65,17 @@ class User implements UserInterface
      */
 
     private $image;
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Comment",mappedBy="author")
+     */
+    private $comments;
 
     public function __construct()
     {
         $this->books=new ArrayCollection();
         $this->roles=new ArrayCollection();
+        $this->comments=new ArrayCollection();
     }
     /**
      * Get id
@@ -265,6 +271,24 @@ class User implements UserInterface
     public function setImage(string $image)
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments(): ArrayCollection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment $comments
+     * @return User
+     */
+    public function setComments(Comment $comments)
+    {
+        $this->comments[] = $comments;
+        return $this;
     }
 }
 

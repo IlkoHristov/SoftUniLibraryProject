@@ -32,9 +32,43 @@
                         </div>
                     </footer>
                 </article>
+                <a class="btn btn-success btn-sm" id="add">Add Comment</a>
+                <div id="comment"></div>
             </div>
+
+            <hr/>
+            <br/>
+            <br/>
+
+
+            {% for comment in comments %}
+            <p>{{ comment.description }}</p>
+                <small>Added by: <a href="{{ path('user_profile', {id:comment.author.id}) }}"><p>{{ comment.author.fullName }}</p><img class="img-rounded" src="{{ asset('uploads/images/users/' ~ comment.author.image) }}" width="50px" height="20px"></a></small><br/>
+            <small>Added on: {{ comment.dateAdded|date("F jS \\a\\t g:ia") }}</small>
+                <hr/>
+
+            {% endfor %}
         </div>
     </div>
 
+
+    <script>
+    $('#add').click(function () {
+        $('#comment').empty();
+        let commentForm=`
+        <form method="post" action="{{ path('comment_create', {id:book.id}) }}">
+        <div class="form-group">
+
+                        <div class="col-sm-6">
+                        <textarea class="form-control" rows="6" id="description" name="comment[description]"></textarea>
+                        <input type="submit" value="Add" class="btn btn-success btn-sm"/>
+                        </div>
+                    </div>
+        </form>
+        `;
+        $('#comment').append(commentForm);
+        $('#comment').toggle();
+    })
+    </script>
 {% endblock %}
 
