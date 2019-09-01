@@ -2,6 +2,12 @@
 
 namespace SoftUniBlogBundle\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping;
+use Doctrine\ORM\OptimisticLockException;
+use SoftUniBlogBundle\Entity\Book;
+use SoftUniBlogBundle\Entity\Comment;
+
 /**
  * CommentRepository
  *
@@ -10,4 +16,25 @@ namespace SoftUniBlogBundle\Repository;
  */
 class CommentRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function __construct($em, Mapping\ClassMetadata $metaData=null)
+    {
+        parent::__construct($em,
+            $metaData == null ?
+                new Mapping\ClassMetadata(Book::class) :
+                $metaData
+        );
+    }
+    public function insert(Comment $comment)
+    {
+
+        try {
+            $this->_em->persist($comment);
+            $this->_em->flush();
+            return true;
+        } catch (OptimisticLockException $e) {
+        } catch (OptimisticLockException $e) {
+        }
+
+        return false;
+    }
 }

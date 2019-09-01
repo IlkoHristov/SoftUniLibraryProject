@@ -8,6 +8,7 @@ use SoftUniBlogBundle\Entity\Comment;
 
 interface CommentServiceInterface
 {
+    public function create(Comment $comment):bool;
     /**
      * @return Comment[]
      */
